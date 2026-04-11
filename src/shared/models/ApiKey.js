@@ -41,6 +41,40 @@ const apiKeySchema = new mongoose.Schema(
             type: Boolean,
             default: true
         },
-        
+        permissions: {
+            canIngest: {
+                type: Boolean,
+                default: true
+            },
+            canReadAnalytics: {
+                type: Boolean,
+                default: false
+            },
+            allowedServices: [{
+                type: String,
+                trim: true
+            }],
+        },
+        security: {
+            allowedIPs: [{
+                type: String,
+                validate: {
+                    validator: function(v){
+                        return /^(\d{1,3}\.){3}\d{1,3}(\/\d{1,2})?$/.test(v) ||
+                        v === '0.0.0.0/0';
+                    },
+                    message: 'Invalid IP address format'
+                }
+            }],
+            allowedOrigins: [{
+                type: String,
+                validate: {
+                    validator: function(v) {
+                        return /^https?:\/\/[^\s]+$/.test(v) || v === '*';
+                    },
+                    message: 'Invalid origin format'
+                }
+            }]
+        }
     }
 )
