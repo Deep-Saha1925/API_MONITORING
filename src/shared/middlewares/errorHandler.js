@@ -29,4 +29,7 @@ const errorHandler = (err, req, res, next) => {
         message = 'Token expired';
     };
 
+    res.status(statusCode).json(ResponseFormatter.error(message, statusCode, errors));
 }
+
+export default errorHandler;
