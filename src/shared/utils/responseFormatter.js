@@ -28,4 +28,20 @@ class ResponseFormatter{
             timestamp: new Date().toISOString()
         }
     }
+
+    static paginated(data = null, page, limit, total){
+        return {
+            success: true,
+            data,
+            pagination : {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit)
+            },
+            timestamp: new Date().toISOString()
+        }
+    }
 }
+
+export default ResponseFormatter;
