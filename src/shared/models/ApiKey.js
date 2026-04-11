@@ -1,5 +1,5 @@
 import mongoose from './mongoose';
-
+import SecurityUtils from '../utils/SecurityUtils.js';
 
 const apiKeySchema = new mongoose.Schema(
     {
@@ -74,7 +74,52 @@ const apiKeySchema = new mongoose.Schema(
                     },
                     message: 'Invalid origin format'
                 }
-            }]
-        }
+            }],
+            lastRotated: {
+                type: Date,
+                default: Date.now
+            },
+            rotationWarningDays: {
+                type: Number,
+                default: 30
+            },
+        },
+        expiresAt: {
+            type: Date,
+            default: () => {
+                const days = parseInt(process.env.API_KEY_EXPIRY_DAYS || '365');
+                return new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+            },
+            index: true
+        },
+        metaData: {
+            createdBy: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            },
+            purpose: {
+                type: String,
+                trim: true,
+                maxLength: 200
+            },
+            tags: [{
+                type: String,
+                trim: true,
+                maxLength: 50
+            }],
+        },
+    },
+    {
+        timestamps: true,
+        collection: 'api_keys'
     }
-)
+);
+
+apiKeySchema.index({ clientId: 1, isActive: 1});
+apiKeySchema.index({ keyValue: 1, isActive: 1});
+apiKeySchema.index({ environment: 1, clientId: 1});
+apiKeySchema.index({ expiresAt: 1}, {expiresAfterSeconds: 0});
+
+const ApiKey = mongoose.model('ApiKey', apiKeySchema);
+
+export default ApiKey;
