@@ -8,4 +8,24 @@ class ResponseFormatter{
             timestamp: new Date().toISOString()
         }
     }
+
+    static error(message = "Success", statusCode = 500, error = null){
+        return {
+            success: false,
+            message,
+            error,
+            statusCode,
+            timestamp: new Date().toISOString()
+        }
+    }
+
+    static validationError(error = null){
+        return {
+            success: false,
+            message: 'Validation failed',
+            error,
+            statusCode: 400,
+            timestamp: new Date().toISOString()
+        }
+    }
 }
