@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS endpoint_metrics (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
-    UNIQUE(client_id, service_name, endpoint, method, time_bucket) -- Inseert | Update
+    UNIQUE(client_id, service_name, endpoint, method, time_bucket) -- Insert | Update
 );
 
 -- 10:25 => 1 req (Time Roundoff) [10:00        11:00]
