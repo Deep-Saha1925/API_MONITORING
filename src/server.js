@@ -8,7 +8,7 @@ import postgres from './shared/config/postgres.js';
 import rabbitmq from './shared/config/rabbitmq.js';
 import errorHandler from './shared/middlewares/errorHandler.js';
 import ResponseFormatter from './shared/utils/responseFormatter.js';
-import cookieParser from "cookie-parser"
+import cookieParser from "cookie-parser";
 
 // Routers
 import authRouter from "./services/auth/routes/authRouter.js";

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import config from "./index";
-import logger from "./logger";
+import config from "./index.js";
+import logger from "./logger.js";
 
 /**
  * Connects to MongoDB using Mongoose.
@@ -73,4 +73,4 @@ class MongoConnection {
     }
 }
 
-export default MongoConnection();
+export default new MongoConnection();

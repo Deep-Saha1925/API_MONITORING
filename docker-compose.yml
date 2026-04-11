@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:15-alpine
@@ -59,7 +57,7 @@ services:
     image: dpage/pgadmin4:7
     container_name: api-monitor-pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: dip23447@gmail.com
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: deep
     ports:
       - "8080:80"
@@ -79,30 +77,36 @@ services:
     environment:
       NODE_ENV: production
       PORT: 5000
-      # MongoDB (local container)
-      MONGO_URI: mongodb://mongo:27017/api_monitoring
-      MONGO_DB_NAME: api_monitoring
-      # PostgreSQL (Docker container)
+
+      # MongoDB
+      MONGO_URI: mongodb://mongo:27017/api_monitor
+      MONGO_DB_NAME: api_monitor
+
+      # PostgreSQL (MATCHED)
       PG_HOST: postgres
       PG_PORT: 5432
-      PG_DATABASE: api_monitoring
+      PG_DATABASE: api_monitor
       PG_USER: postgres
-      PG_PASSWORD: test
-      # RabbitMQ (Docker container)
-      RABBITMQ_URL: amqp://api_user:secure_password@rabbitmq:5672/api_monitoring
+      PG_PASSWORD: deep
+
+      # RabbitMQ (MATCHED)
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/api_monitor
       RABBITMQ_QUEUE: api_hits
+
       # Security
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: your_secret_key
       JWT_EXPIRES_IN: 24h
+
       # Rate Limiting
       RATE_LIMIT_WINDOW_MS: 60000
       RATE_LIMIT_MAX_REQUESTS: 100
+
     ports:
       - "5000:5000"
     volumes:
       - ./logs:/app/logs
     networks:
-      - api-monitoring-network
+      - api-monitor-network
     depends_on:
       postgres:
         condition: service_healthy
@@ -114,6 +118,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
   consumer:
     build:
       context: .
@@ -121,24 +126,29 @@ services:
     container_name: api-monitoring-consumer
     environment:
       NODE_ENV: production
-      # MongoDB (local container)
-      MONGO_URI: mongodb://mongo:27017/api_monitoring
-      MONGO_DB_NAME: api_monitoring
-      # PostgreSQL (Docker container)
+
+      # MongoDB
+      MONGO_URI: mongodb://mongo:27017/api_monitor
+      MONGO_DB_NAME: api_monitor
+
+      # PostgreSQL (MATCHED)
       PG_HOST: postgres
       PG_PORT: 5432
-      PG_DATABASE: api_monitoring
+      PG_DATABASE: api_monitor
       PG_USER: postgres
-      PG_PASSWORD: test
-      # RabbitMQ (Docker container)
-      RABBITMQ_URL: amqp://api_user:secure_password@rabbitmq:5672/api_monitoring
+      PG_PASSWORD: deep
+
+      # RabbitMQ (MATCHED)
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/api_monitor
       RABBITMQ_QUEUE: api_hits
+
       # Security
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: your_secret_key
+
     volumes:
       - ./logs:/app/logs
     networks:
-      - api-monitoring-network
+      - api-monitor-network
     depends_on:
       postgres:
         condition: service_healthy
