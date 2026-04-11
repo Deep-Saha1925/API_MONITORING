@@ -79,3 +79,65 @@ app.use("/", (req, res) => {
 app.use((req, res) => {
     res.status(404).json(ResponseFormatter.error("Endpoint not found", 404))
 })
+
+async function initializeConnection(){
+    try {
+        logger.info('Initializing connections');
+
+        // Connect MongoDB
+        await mongodb.connect();
+
+        // PG connect
+        await postgres.testConnection();
+
+        // RabbitMQ
+        await rabbitmq.connect();
+
+        logger.info('All connections established successfully...');
+    } catch (error) {
+        logger.error('Failed to initializing connections: ', error);
+        throw error;
+    }
+}
+
+async function startServer(){
+    try {
+        await initializeConnection();
+
+        const server = app.listen(config.port, () => {
+            logger.info(`Server started on port ${config.port}`);
+            logger.info(`Environment: ${config.node_env}`);
+            logger.info(`API available at: http://localhost:${config.port}`);
+        });
+
+
+        const gracefulShutdown = async (signal) => {
+            logger.info(`${signal} received, shutting down gracefully...`);
+
+            server.close(async () => {
+                logger.info("HTTP server closed");
+
+                try {
+                    await mongodb.disconnect();
+                    await postgres.close();
+                    await rabbitmq.close();
+                    logger.info('All connections closed, exiting process');
+                    process.exit(0);
+                } catch (error) {
+                    logger.error('Error during shutdown:', error);
+                    process.exit(1);
+                }
+            })
+
+            setTimeout(() => {
+                logger.error("Forced shutdown")
+                process.exit(1);
+            }, 10000);
+
+        }
+
+
+    } catch (error) {
+        
+    }
+}
