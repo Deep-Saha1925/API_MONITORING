@@ -1,67 +1,72 @@
-import mongoose from './mongoose';
+import mongoose from 'mongoose';
 import SecurityUtils from '../utils/SecurityUtils.js';
 
+/**
+ * MongoDB schema for API keys
+ * Each API key belongs to a client and is used for authentication
+ */
 const apiKeySchema = new mongoose.Schema(
     {
         keyId: {
             type: String,
-            unique: true,
             required: true,
-            index: true
+            unique: true,
+            index: true,
         },
         keyValue: {
             type: String,
-            unique: true,
             required: true,
-            index: true
+            unique: true,
+            index: true,
         },
         clientId: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId, // 123
             ref: 'Client',
             required: true,
-            index: true
+            index: true,
         },
         name: {
             type: String,
-            unique: true,
+            required: true,
             trim: true,
-            maxLength: 100
+            maxlength: 100,
         },
         description: {
             type: String,
-            maxLength: 500,
-            default: ''
+            maxlength: 500,
+            default: '',
         },
         environment: {
             type: String,
             enum: ['production', 'staging', 'development', 'testing'],
-            default: 'production'
+            default: 'production',
         },
         isActive: {
             type: Boolean,
-            default: true
+            default: true,
         },
         permissions: {
             canIngest: {
                 type: Boolean,
-                default: true
+                default: true,
             },
             canReadAnalytics: {
                 type: Boolean,
-                default: false
+                default: false,
             },
             allowedServices: [{
                 type: String,
-                trim: true
+                trim: true,
             }],
         },
+        // usage and per-key rate limiting removed
         security: {
             allowedIPs: [{
                 type: String,
                 validate: {
-                    validator: function(v){
+                    validator: function (v) {
                         return /^(\d{1,3}\.){3}\d{1,3}(\/\d{1,2})?$/.test(v) ||
-                        v === '0.0.0.0/0';
+                            v === '0.0.0.0/0';
                     },
                     message: 'Invalid IP address format'
                 }
@@ -69,7 +74,7 @@ const apiKeySchema = new mongoose.Schema(
             allowedOrigins: [{
                 type: String,
                 validate: {
-                    validator: function(v) {
+                    validator: function (v) {
                         return /^https?:\/\/[^\s]+$/.test(v) || v === '*';
                     },
                     message: 'Invalid origin format'
@@ -77,11 +82,11 @@ const apiKeySchema = new mongoose.Schema(
             }],
             lastRotated: {
                 type: Date,
-                default: Date.now
+                default: Date.now,
             },
             rotationWarningDays: {
                 type: Number,
-                default: 30
+                default: 30,
             },
         },
         expiresAt: {
@@ -90,35 +95,45 @@ const apiKeySchema = new mongoose.Schema(
                 const days = parseInt(process.env.API_KEY_EXPIRY_DAYS || '365');
                 return new Date(Date.now() + days * 24 * 60 * 60 * 1000);
             },
-            index: true
+            index: true,
         },
-        metaData: {
+        metadata: {
             createdBy: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'User'
+                ref: 'User',
             },
             purpose: {
                 type: String,
                 trim: true,
-                maxLength: 200
+                maxlength: 200,
             },
             tags: [{
                 type: String,
                 trim: true,
-                maxLength: 50
+                maxlength: 50,
             }],
+        },
+        createdBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
         },
     },
     {
         timestamps: true,
-        collection: 'api_keys'
+        collection: 'api_keys',
     }
 );
 
-apiKeySchema.index({ clientId: 1, isActive: 1});
-apiKeySchema.index({ keyValue: 1, isActive: 1});
-apiKeySchema.index({ environment: 1, clientId: 1});
-apiKeySchema.index({ expiresAt: 1}, {expiresAfterSeconds: 0});
+apiKeySchema.index({ clientId: 1, isActive: 1 });
+apiKeySchema.index({ keyValue: 1, isActive: 1 });
+apiKeySchema.index({ environment: 1, clientId: 1 });
+apiKeySchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 })
+
+apiKeySchema.methods.isExpired = function () {
+    if (!this.expiresAt) return false;
+    return new Date(this.expiresAt) < new Date();
+};
 
 const ApiKey = mongoose.model('ApiKey', apiKeySchema);
 
