@@ -119,42 +119,42 @@ services:
       timeout: 10s
       retries: 3
 
-  consumer:
-    build:
-      context: .
-      dockerfile: Dockerfile.consumer
-    container_name: api-monitoring-consumer
-    environment:
-      NODE_ENV: production
+  # consumer:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.consumer
+  #   container_name: api-monitoring-consumer
+  #   environment:
+  #     NODE_ENV: production
 
-      # MongoDB
-      MONGO_URI: mongodb://mongo:27017/api_monitor
-      MONGO_DB_NAME: api_monitor
+  #     # MongoDB
+  #     MONGO_URI: mongodb://mongo:27017/api_monitor
+  #     MONGO_DB_NAME: api_monitor
 
-      # PostgreSQL (MATCHED)
-      PG_HOST: postgres
-      PG_PORT: 5432
-      PG_DATABASE: api_monitor
-      PG_USER: postgres
-      PG_PASSWORD: deep
+  #     # PostgreSQL (MATCHED)
+  #     PG_HOST: postgres
+  #     PG_PORT: 5432
+  #     PG_DATABASE: api_monitor
+  #     PG_USER: postgres
+  #     PG_PASSWORD: deep
 
-      # RabbitMQ (MATCHED)
-      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/api_monitor
-      RABBITMQ_QUEUE: api_hits
+  #     # RabbitMQ (MATCHED)
+  #     RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/api_monitor
+  #     RABBITMQ_QUEUE: api_hits
 
-      # Security
-      JWT_SECRET: your_secret_key
+  #     # Security
+  #     JWT_SECRET: your_secret_key
 
-    volumes:
-      - ./logs:/app/logs
-    networks:
-      - api-monitor-network
-    depends_on:
-      postgres:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    restart: unless-stopped
+  #   volumes:
+  #     - ./logs:/app/logs
+  #   networks:
+  #     - api-monitor-network
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   restart: unless-stopped
 
 volumes:
   postgres_data:
