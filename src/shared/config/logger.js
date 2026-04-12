@@ -15,10 +15,10 @@ const logger = winston.createLogger({
         winston.format.json()
     ),
 
-    defaultMeta: { service: 'api-monitoring' },
+    defaultMeta: { service: 'api-monitor' },
     transports: [
-        new winston.transport.File({ filename: 'logs/error.log', level: 'error' }),
-        new winston.transport.File({ filename: 'logs/combined.log' }),
+        new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+        new winston.transports.File({ filename: 'logs/combined.log' }),
     ]
 })
 
