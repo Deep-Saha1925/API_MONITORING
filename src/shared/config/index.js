@@ -1,6 +1,6 @@
 // Global level config
 
-import dotenv from '.dotenv';
+import dotenv from 'dotenv';
 dotenv.config();
 
 const config = {
@@ -9,14 +9,14 @@ const config = {
     port: parseInt(process.env.PORT || "5000", 10),
     
     mongo: {
-        uri: process.env.MONGO_URI || 'mongodb://localhost:27017/api_monitoring',
-        dbName: process.env.MONGO_DB_NAME || 'api_monitoring',
+        uri: process.env.MONGO_URI || 'mongodb://localhost:27017/api_monitor',
+        dbName: process.env.MONGO_DB_NAME || 'api_monitor',
     },
 
     postgres: {
         host: process.env.POSTGRES_HOST || 'localhost',
         port: parseInt(process.env.POSTGRES_PORT || "5432", 10),
-        database: process.env.POSTGRES_DB || 'api_monitoring',
+        database: process.env.POSTGRES_DB || 'api_monitor',
         user: process.env.POSTGRES || 'postgres',
         password: process.env.POSTGRES_PASSWORD || 'postgres',
     },
