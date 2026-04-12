@@ -2,9 +2,9 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-SOURCE package*.json ./
+COPY package*.json ./
 
-RUN npm install -production
+RUN npm install --production
 
 COPY . .
 
