@@ -1,6 +1,7 @@
 import config from "../../../shared/config/index.js";
 import { APPLICATION_ROLES } from "../../../shared/constants/roles.js";
-import AppError from "../../../shared/utils/AppError.js"
+import AppError from "../../../shared/utils/AppError.js";
+import ResponseFormatter from '../../../shared/utils/responseFormatter.js';
 
 export class AuthController{
     constructor(authService){
@@ -29,6 +30,8 @@ export class AuthController{
                 secure: config.cookie.secure,
                 maxAge: config.cookie.expiresIn
             });
+
+            res.status(201).json(ResponseFormatter.success(user, "Super admin created successfully", 201))
 
         } catch (error) {
             next(error);
