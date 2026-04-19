@@ -28,6 +28,18 @@ export class AuthService{
     }
     
     /**
+     * Removing password for response
+     * @param {*} user 
+     * @returns 
+     */
+    formatUserForResponse(user){
+        const userObj = user.toObject ? user.toObject() : {...user};
+        delete userObj.password;
+        return userObj;
+    }
+
+
+    /**
      * Onboards a new super admin user.
      * @param {Object} superAdminData - The data of the super admin to be onboarded.
      * @returns {Promise<Object>} - Returns an object containing the user and token.
