@@ -38,6 +38,12 @@ const config = {
         windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || "90000", 10), // 15 minute
         max: parseInt(process.env.RATE_LIMIT_MAX || "1000", 10), // limit each IP to 1000 requests per windowMs
     },
+
+    cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        expiresIn: 24 * 60 * 60 * 1000 //24h
+    }
 };
 
 export default config;
