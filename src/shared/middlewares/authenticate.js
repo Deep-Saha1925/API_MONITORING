@@ -1,4 +1,4 @@
-import ResponseFormat from "../utils/responseFormat.js";
+import ResponseFormat from "../utils/responseFormatter.js";
 import jwt from "jsonwebtoken";
 import config from "../config/index.js";
 

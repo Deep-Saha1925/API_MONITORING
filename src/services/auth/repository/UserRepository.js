@@ -1,4 +1,4 @@
-import BaseRepository from "./BaseRepository";
+import BaseRepository from "./BaseRepository.js";
 import User from '../../../shared/models/User.js';
 import logger from '../../../shared/config/logger.js';
 
@@ -89,3 +89,5 @@ class MongoUserRepository extends BaseRepository{
         }
     }
 }
+
+export default new MongoUserRepository();

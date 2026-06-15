@@ -61,3 +61,5 @@ class SecurityUtils {
     }
 
 }
+
+export default SecurityUtils;
