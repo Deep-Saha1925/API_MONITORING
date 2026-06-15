@@ -33,3 +33,5 @@ const authenticate = async (req, res, next) => {
         return res.status(401).json(ResponseFormat.error("Invalid authentication token", 401));
     }
 }
+
+export default authenticate;
