@@ -66,7 +66,7 @@ export class AuthController{
         try{
             const { username, password } = req.body;
             const { token, user } = await this.authService.login(username, password);
-            
+
             res.cookie("authToken", token, {
                 httpOnly: config.cookie.httpOnly,
                 secure: config.cookie.secure,
@@ -74,6 +74,17 @@ export class AuthController{
             });
             res.status(200).json(ResponseFormatter.success(user, "Login successful", 200));
 
+        }catch(error){
+            next(error);
+        }
+    }
+
+    async getProfile(req, res, next){
+        try{
+            const userId = req.user.userId;
+            const result = await this.authService.getProfile(userId);
+
+            res.status(200).json(ResponseFormatter.success(result, "Profile fetched successfully!", 200));
         }catch(error){
             next(error);
         }

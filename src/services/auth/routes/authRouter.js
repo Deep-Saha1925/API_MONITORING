@@ -31,4 +31,10 @@ router.post('/login',
     (req, res, next) => authController.login(req, res, next)
 )
 
+router.get('/profile',
+    requestLogger,
+    authenticate,
+    (req, res, next) => authController.getProfile(req, res, next)
+)
+
 export default router;
