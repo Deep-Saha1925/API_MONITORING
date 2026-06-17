@@ -2,6 +2,7 @@ import AppError from '../../../shared/utils/AppError.js';
 import jwt from "jsonwebtoken";
 import config from '../../../shared/config/index.js';
 import logger from '../../../shared/config/logger.js';
+import bcrypt from 'bcrypt.js';
 
 export class AuthService{
     constructor(userRepository) {
@@ -36,6 +37,10 @@ export class AuthService{
         const userObj = user.toObject ? user.toObject() : {...user};
         delete userObj.password;
         return userObj;
+    }
+
+    async comparePassword(userEnteredPassword, hashedPassword){
+        return await bcrypt.compare(userEnteredPassword, hashedPassword);
     }
 
 
@@ -96,6 +101,34 @@ export class AuthService{
         }
         catch (error) {
             logger.error("Error in registering user", error)
+            throw error;
+        }
+    };
+
+    async login(username, password){
+        try {
+            const user = await this.userRepository.findByUsername(username);
+            if (!user) {
+                throw new AppError("Invalid username or password", 401);
+            }
+        
+            if(!user.isActive){
+                throw new AppError("Accoount is deactivated", 403);
+            }
+
+            const isPasswordValid = await this.comparePassword(password, user.password);
+            if(!isPasswordValid){
+                throw new AppError("Invalid credentials.", 401);
+            }
+            const token = this.generateToken(user);
+
+            logger.info("uUser logged in sucessfully..", {username: user.username})
+            return {
+                user: this.formatUserForResponse(user),
+                token
+            }
+        }catch (error) {
+            logger.error("Error in user login", error)
             throw error;
         }
     }
