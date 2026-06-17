@@ -132,4 +132,18 @@ export class AuthService{
             throw error;
         }
     }
+
+    async getProfile(userId){
+        try {
+            const user = await this.userRepository.findById(userId);
+            if(!user){
+                throw new AppError("User not found!", 404);
+            }
+            return this.formatUserForResponse(user);
+
+        } catch (error) {
+            logger.error("Error getting user profile: ", error)
+            throw error;
+        }
+    }
 }

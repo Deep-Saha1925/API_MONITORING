@@ -89,4 +89,13 @@ export class AuthController{
             next(error);
         }
     }
+
+    async logout(req, res, nex){
+        try {
+            res.clearCookie("authToken");
+            res.status(200).json(ResponseFormatter.success({}, "Logout successful", 200));
+        } catch (error) {
+            next(error); 
+        }
+    }
 }
