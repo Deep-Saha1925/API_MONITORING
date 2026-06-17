@@ -68,4 +68,35 @@ export class AuthService{
             throw error
         }
     };
+
+    async register(userData){
+        try {
+
+            const existingUsername = await this.userRepository.findByUsername(userData.username);
+            if (existingUsername) {
+                throw new AppError("Username already exists", 409);
+            }
+
+            const existingEmail = await this.userRepository.findByEmail(userData.email);
+            if (existingEmail) {
+                throw new AppError("Email already exists", 409);
+            }
+
+            const user = await this.userRepository.create(userData);
+            const token = this.generateToken(user);
+
+            logger.info("User registered successfully", {
+                username: user.username
+            })
+
+            return {
+                user: this.formatUserForResponse(user),
+                token
+            }
+        }
+        catch (error) {
+            logger.error("Error in registering user", error)
+            throw error;
+        }
+    }
 }
