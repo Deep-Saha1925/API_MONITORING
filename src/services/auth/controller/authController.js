@@ -60,5 +60,22 @@ export class AuthController{
         }catch (error) {
             next(error);
         }
+    };
+
+    async login(req, res, next){
+        try{
+            const { username, password } = req.body;
+            const { token, user } = await this.authService.login(username, password);
+            
+            res.cookie("authToken", token, {
+                httpOnly: config.cookie.httpOnly,
+                secure: config.cookie.secure,
+                maxAge: config.cookie.expiresIn
+            });
+            res.status(200).json(ResponseFormatter.success(user, "Login successful", 200));
+
+        }catch(error){
+            next(error);
+        }
     }
 }
