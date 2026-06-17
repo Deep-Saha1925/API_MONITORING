@@ -31,7 +31,7 @@ const config = {
 
     jwt: {
         secret: process.env.JWT_SECRET || 'test_secret',
-        expiresIn: process.env.JWT_EXPIRES_IN || 24 * 60 * 60 // 24 hours,
+        expiresIn: process.env.JWT_EXPIRES_IN || '24h' // 24 hours,
     },
 
     rateLimit: {

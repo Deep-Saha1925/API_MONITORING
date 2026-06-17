@@ -28,8 +28,7 @@ class RabbitMQConnection {
         try {
             this.isConnected = true;
 
-            logger.info(`Connecting to RabbitMQ at ${config.rabbitmq.host}:${config.rabbitmq.port}`);
-            this.connecttion = await amqp.connect(config.rabbitmq.url);
+            this.connection = await amqp.connect(config.rabbitmq.url);
             this.channel = await this.connecttion.createChannel();
 
             // Keys for RabbitMQ
@@ -49,7 +48,7 @@ class RabbitMQConnection {
                 }
             })
 
-            logger.info(`Connected to RabbitMQ at ${config.rabbitmq.host}:${config.rabbitmq.port}`);
+            logger.info(`RabbitMQ connected successfully`);
 
             this.connection.on("close", () => {
                 logger.warn('RabbitMQ connection closed');
