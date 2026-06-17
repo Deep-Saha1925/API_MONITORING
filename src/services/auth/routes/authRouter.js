@@ -37,4 +37,9 @@ router.get('/profile',
     (req, res, next) => authController.getProfile(req, res, next)
 )
 
+router.get("/logout",
+    requestLogger,
+    (req, res, next) => authController.logout(req, res, next)
+)
+
 export default router;
